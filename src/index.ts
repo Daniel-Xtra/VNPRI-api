@@ -7,7 +7,7 @@ import { logger } from "./utils/logger";
 
 // import * as fs from "fs";
 
-const port = PORT || 5000;
+const port = PORT || 7000;
 // const port2 = PORT2;
 
 const httpServer = new Server(app);
