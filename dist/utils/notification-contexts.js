@@ -1,0 +1,21 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ADDED_TO_PADDILIST = exports.SONG_SUBSCRIPTION_PURCHASED = exports.SONG_PURCHASED = exports.PRODUCT_ORDERED = exports.COIN_PURCHASE = exports.POLL_REACTION = exports.FOLLOWED_POST_COMMENT = exports.POST_FOLLOW = exports.DIRECT_MESSAGE = exports.RECEIVED_COINS = exports.SHARED_COINS = exports.COMMENT_LIKE = exports.COMMENT_REPLY = exports.NEW_POLL = exports.NEW_POST = exports.POLL_COMMENT = exports.POST_COMMENT = void 0;
+exports.POST_COMMENT = "post_comment";
+exports.POLL_COMMENT = "poll_comment";
+exports.NEW_POST = "new_post";
+exports.NEW_POLL = "new_poll";
+exports.COMMENT_REPLY = "comment_reply";
+exports.COMMENT_LIKE = "comment_like";
+exports.SHARED_COINS = "shared_coins";
+exports.RECEIVED_COINS = "received_coins";
+exports.DIRECT_MESSAGE = "direct_message";
+exports.POST_FOLLOW = "post_follow";
+exports.FOLLOWED_POST_COMMENT = "followed_post_comment";
+exports.POLL_REACTION = "poll_reaction";
+exports.COIN_PURCHASE = "coin_purchase";
+exports.PRODUCT_ORDERED = "product_ordered";
+exports.SONG_PURCHASED = "song_purchased";
+exports.SONG_SUBSCRIPTION_PURCHASED = "song_subscription_purchased";
+exports.ADDED_TO_PADDILIST = "added_to_paddilist";
+//# sourceMappingURL=notification-contexts.js.map
