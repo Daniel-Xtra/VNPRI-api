@@ -40,11 +40,6 @@ class UserController extends baseController_1.BaseController {
          * @param status
          * @param user
          */
-        this.updateStatus = async (status, user) => {
-            // responsible for update status
-            const doc_status = await this._userService.updateStatus(status, user);
-            return this.sendResponse(doc_status);
-        };
         this.getUserStatus = async (username) => {
             // responsible for get user status
             const user = await this._userService.getUserStatus(username);

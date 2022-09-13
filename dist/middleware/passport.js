@@ -72,9 +72,7 @@ exports.signupStrategy = new passport_local_1.Strategy({
             ...body,
         });
         const profile = await Profile_1.ProfileModel.create();
-        const notificationSettings = await User_1.SettingModel.create();
         await user.setProfile(profile);
-        await user.setSettings(notificationSettings);
         // Send the user information to the next middleware
         return done(null, user);
     }
@@ -130,9 +128,7 @@ exports.adminSignupStrategy = new passport_local_1.Strategy({
             ...body,
         });
         const profile = await Profile_1.ProfileModel.create();
-        const notificationSettings = await User_1.SettingModel.create();
         await user.setProfile(profile);
-        await user.setSettings(notificationSettings);
         // Send the user information to the next middleware
         return done(null, user);
     }

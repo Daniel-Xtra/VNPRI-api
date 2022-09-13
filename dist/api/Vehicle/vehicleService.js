@@ -50,7 +50,9 @@ class VehicleService {
             }
         };
         this.delVehicle = async (plate_number) => {
-            const search = await vehicleModel_1.VehicleModel.findOne({ where: { plate_number } });
+            const search = await vehicleModel_1.VehicleModel.findOne({
+                where: { plate_number },
+            });
             if (!search) {
                 throw new app_error_1.AppError("Cannot perform that action.", null, 400);
             }

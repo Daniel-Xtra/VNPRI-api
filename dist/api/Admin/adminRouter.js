@@ -12,7 +12,6 @@ const router = express_1.default.Router();
 const call = controllerHandler_1.controllerHandler;
 const Admin = new adminController_1.AdminController();
 // router.use(adminAuthorize);
-router.get("/home", [middleware_1.adminAuthorize], call(Admin.getAdminHome, (req, _res, _next) => [req.user]));
 router.get("/manage-users", [middleware_1.adminAuthorize], call(Admin.getAllUsers, (req, _res, _next) => [
     req.user,
     req.query.per_page,
@@ -38,13 +37,6 @@ router.get("/manage-orders", [middleware_1.adminAuthorize], call(Admin.getAllOrd
     req.query.order_prev,
 ]));
 router.get("/manage-docs-couns", [middleware_1.adminAuthorize], call(Admin.getAllDocsCouns, (req, _res, _next) => [req.user]));
-router.get("/manage-sessions", [middleware_1.adminAuthorize], call(Admin.getAllSessions, (req, _res, _next) => [
-    req.user,
-    req.query.per_page,
-    req.query.sess_next,
-    req.query.sess_prev,
-]));
-router.get("/user-sessions/:username", [middleware_1.adminAuthorize], call(Admin.getUserSessions, (req, res, next) => [req.params.username]));
 router.get("/search", [middleware_1.adminAuthorize], call(Admin.searchCollection, (req, _res, _next) => [
     req.query.q,
     req.query.f,

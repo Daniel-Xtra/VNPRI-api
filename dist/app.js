@@ -24,7 +24,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const Auth_1 = require("./api/Auth");
-const Notification_1 = require("./api/Notification");
 const User_1 = require("./api/User");
 const config_1 = require("./config");
 const middleware_1 = require("./middleware");
@@ -37,6 +36,7 @@ const swaggerDocument = __importStar(require("./swagger/swagger.json"));
 const Profile_1 = require("./api/Profile");
 const Vehicle_1 = require("./api/Vehicle");
 const Twilio_1 = require("./api/Twilio");
+const Report_1 = require("./api/Report");
 class App {
     constructor() {
         this.express = express_1.default();
@@ -54,7 +54,7 @@ class App {
         this.express.use("/api-docs", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerDocument));
         this.express.use(`${this.basePath}/auth`, Auth_1.AuthRouter);
         this.express.use(`${this.basePath}/users`, User_1.UserRouter);
-        this.express.use(`${this.basePath}/notifications`, Notification_1.NotificationRouter);
+        this.express.use(`${this.basePath}/reports`, Report_1.ReportRouter);
         this.express.use(`${this.basePath}/profiles`, Profile_1.ProfileRouter);
         this.express.use(`${this.basePath}/admin`, adminRouter_1.AdminRouter);
         this.express.use(`${this.basePath}/vehicles`, Vehicle_1.VehicleRouter);

@@ -5,8 +5,7 @@ import { ProfileModel } from "../Profile";
 
 import { USER_EXCLUDES } from "../../utils/helpers";
 
-import moment from "moment";
-import { AccountModel, IUser, UserConnectionsModel } from ".";
+import { IUser } from ".";
 
 import { DB } from "../../shared/database";
 
@@ -29,14 +28,6 @@ export class UserService {
         {
           model: ProfileModel,
           required: true,
-          attributes: {
-            exclude: ["updated_at", "deleted_at", "userId"],
-          },
-        },
-        {
-          model: AccountModel,
-          as: "accounts",
-          required: false,
           attributes: {
             exclude: ["updated_at", "deleted_at", "userId"],
           },
@@ -109,12 +100,6 @@ export class UserService {
       attributes: {
         exclude: USER_EXCLUDES,
       },
-      include: [
-        {
-          model: UserConnectionsModel,
-          attributes: ["socket_id"],
-        },
-      ],
     });
 
     if (user) {
@@ -138,61 +123,6 @@ export class UserService {
    * @returns user
    * @memberof UserController
    */
-
-  public updateStatus = async (status, user: any) => {
-    let data: any = {};
-    let now_momemnt = moment();
-    let today_rate: any;
-    // check status is true or false
-    if (status == "true") {
-      data.online_time = now_momemnt.toDate();
-      const saved = await AccountModel.create(data);
-      // update user_status of user model by username
-      const updated = await UserModel.update(
-        { user_status: status },
-        { where: { username: user.username } }
-      );
-      if (saved && user.addAccounts(saved) && updated) {
-        let username = user.username;
-        return await this.getUser(username);
-      }
-      throw new AppError("Could not save user data");
-    } else {
-      // find today_rate from account model by userId
-      today_rate = await AccountModel.findOne({
-        where: {
-          offline_time: "",
-          userId: user.id,
-        },
-      });
-      // check today_rate is present or not
-      if (!today_rate) {
-        data.online_time = user.updated_at;
-        const saved = await AccountModel.create(data);
-        today_rate = await user.addAccounts(saved);
-      }
-      data.offline_time = now_momemnt.toDate();
-      data.hour_used = moment
-        .duration(moment(data.offline_time).diff(today_rate.online_time))
-        .hours();
-      // update account of account model by userId
-      const updated_account = await AccountModel.update(data, {
-        where: { userId: user.id },
-      });
-
-      // update user_status of user model by username
-      const updated = await UserModel.update(
-        { user_status: status },
-        { where: { username: user.username } }
-      );
-      if (!updated && !updated_account) {
-        throw new AppError("Could not update user data");
-      }
-      let username = user.username;
-      // return user
-      return await this.getUser(username);
-    }
-  };
 
   public getBlockUsers = async (user: IUser) => {
     // const blockedUsers = await BlockListModel.findAll({ where: { block_id: user.id } });

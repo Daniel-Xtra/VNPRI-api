@@ -87,6 +87,10 @@ VehicleModel.init({
     state_of_plateNo_allocation: {
         type: sequelize_1.default.STRING(),
     },
+    status: {
+        defaultValue: "authorized",
+        type: sequelize_1.default.ENUM({ values: ["authorized", "unauthorized"] }),
+    },
 }, {
     sequelize: database_1.DB,
     modelName: "vehicles",

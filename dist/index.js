@@ -9,7 +9,7 @@ const config_1 = require("./config");
 const logger_1 = require("./utils/logger");
 // import { createServer } from "https";
 // import * as fs from "fs";
-const port = config_1.PORT || 5000;
+const port = config_1.PORT || 7000;
 // const port2 = PORT2;
 const httpServer = new http_1.Server(app_1.default);
 // const server = createServer("", app);

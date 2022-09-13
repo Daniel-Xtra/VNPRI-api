@@ -55,13 +55,16 @@ export class VehicleService {
   };
 
   public delVehicle = async (plate_number: string) => {
-    const search = await VehicleModel.findOne({ where: { plate_number } });
+    const search = await VehicleModel.findOne({
+      where: { plate_number },
+    });
     if (!search) {
       throw new AppError("Cannot perform that action.", null, 400);
     }
 
     const deleted = await VehicleModel.destroy({
       where: { plate_number },
+
       force: true,
     });
     if (!deleted) {

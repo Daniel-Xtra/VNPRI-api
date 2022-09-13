@@ -5,7 +5,11 @@ import { VehicleService } from "./vehicleService";
 import { VehicleController } from "./vehicleController";
 import { VehicleRouter } from "./vehicleRouter";
 
-
-
-
-export { VehicleController, VehicleRouter, VehicleModel, VehicleService, StateModel, OwnerModel}
+export {
+  VehicleController,
+  VehicleRouter,
+  VehicleModel,
+  VehicleService,
+  StateModel,
+  OwnerModel,
+};

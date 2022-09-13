@@ -11,11 +11,6 @@ class AdminController extends baseController_1.BaseController {
          * This function is used for get admin home
          * @param user
          */
-        this.getAdminHome = async (user) => {
-            // responsible for get admin home
-            const admin_home = await this._adminService.getAdminHome(user);
-            return this.sendResponse(admin_home);
-        };
         /**
          * This function is used for get all topics
          * @param user
@@ -80,19 +75,9 @@ class AdminController extends baseController_1.BaseController {
          * @param sess_next
          * @param sess_prev
          */
-        this.getAllSessions = async (user, per_page, sess_next, sess_prev) => {
-            // responsible for get all sessions
-            const all_sessions = await this._adminService.getAllSessions(user, per_page, sess_next, sess_prev);
-            return this.sendResponse(all_sessions);
-        };
         /**
          * This function is used for get all banners
          */
-        this.getUserSessions = async (username) => {
-            // responsible for get all user sessions
-            const sessions = await this._adminService.getUserSessions(username);
-            return this.sendResponse(sessions);
-        };
         /**
          * This function is used for search collection
          * @param query

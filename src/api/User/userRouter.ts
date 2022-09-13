@@ -20,10 +20,6 @@ router.get(
   "/blocked",
   call(User.getBlockUsers, (req, _res, _next) => [req.user])
 );
-router.post(
-  "/doctor-status/:status",
-  call(User.updateStatus, (req, _res, _next) => [req.params.status, req.user])
-);
 
 router.put(
   "/",

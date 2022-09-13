@@ -1,9 +1,7 @@
 import { AppError } from "./../../utils/app-error";
 import { ProfileModel, IProfile } from ".";
-import { UserModel, AccountModel } from "../User";
-import { Op } from "sequelize";
-import moment from "moment";
-import { DB } from "../../shared/database";
+import { UserModel } from "../User";
+
 const { cloudinary } = require("../../middleware/cloudinary");
 // require("dotenv").config;
 export class ProfileService {
@@ -82,58 +80,6 @@ export class ProfileService {
    * @param {String} username of user
    * @memberof ProfileController
    */
-
-  public getDoctorsProgress = async (username: any) => {
-    // find user from user model by username
-    const user = await UserModel.findOne({ where: { username } });
-    let now_momemnt = moment();
-    let NOW = new Date();
-    const TODAY_DATE = now_momemnt.toDate();
-    let TODAY_START = NOW;
-    // find today_rate from account model by today start and end time
-    let today_rate = await AccountModel.findOne({
-      where: {
-        online_time: {
-          [Op.gt]: TODAY_START,
-          [Op.lt]: TODAY_DATE,
-        },
-        userId: user.id,
-      },
-    });
-    let compute = {
-      hour_used: 0,
-      percentage: "",
-      amount_earned: 0,
-      amount_percnt: "",
-    };
-    if (today_rate) {
-      if (!today_rate.offline_time) {
-        today_rate.offline_time = now_momemnt.toDate();
-      }
-      compute.hour_used = moment
-        .duration(moment(today_rate.offline_time).diff(today_rate.online_time))
-        .hours();
-      compute.percentage = Math.round((today_rate.hour_used / 24) * 100) + "%";
-      compute.amount_earned = today_rate.hour_used * 200;
-      const total_amnt = 200 * 24;
-      compute.amount_percnt =
-        Math.round((compute.amount_earned / total_amnt) * 100) + "%";
-    }
-    const total_patients = await DB.query(
-      `
-        SELECT DISTINCT users.id from chats
-          LEFT JOIN users ON users.id = user_id WHERE chats.sent_to = ${user.id}
-
-          UNION
-
-          SELECT DISTINCT users.id from chats
-          LEFT JOIN users ON users.id = sent_to WHERE chats.user_id = ${user.id}`,
-      {
-        type: (<any>DB).QueryTypes.SELECT,
-      }
-    );
-    return { today_rate, compute, total_patients: total_patients.length };
-  };
 
   /**
    * Saves uploaded profile photo

@@ -16,7 +16,6 @@ router.use(middleware_1.authorize);
 router.use(middleware_1.validation(userValidation_1.UserValidationSchema));
 router.get("/", call(User.index, (req, res, next) => []));
 router.get("/blocked", call(User.getBlockUsers, (req, _res, _next) => [req.user]));
-router.post("/doctor-status/:status", call(User.updateStatus, (req, _res, _next) => [req.params.status, req.user]));
 router.put("/", call(User.updateUser, (req, res, next) => [req.user, req.body]));
 router.get("/:username", call(User.getUser, (req, res, next) => [req.params.username]));
 router.get("/:username/status", call(User.getUserStatus, (req, _res, _next) => [req.params.username]));

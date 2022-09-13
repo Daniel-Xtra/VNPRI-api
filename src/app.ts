@@ -1,8 +1,6 @@
 import express from "express";
 import { AuthRouter } from "./api/Auth";
 
-import { NotificationRouter } from "./api/Notification";
-
 import { UserRouter } from "./api/User";
 
 import { BASE_PATH } from "./config";
@@ -17,6 +15,7 @@ import * as swaggerDocument from "./swagger/swagger.json";
 import { ProfileRouter } from "./api/Profile";
 import { VehicleRouter } from "./api/Vehicle";
 import { TwilioRouter } from "./api/Twilio";
+import { ReportRouter } from "./api/Report";
 
 class App {
   public express = express();
@@ -41,7 +40,7 @@ class App {
     );
     this.express.use(`${this.basePath}/auth`, AuthRouter);
     this.express.use(`${this.basePath}/users`, UserRouter);
-    this.express.use(`${this.basePath}/notifications`, NotificationRouter);
+    this.express.use(`${this.basePath}/reports`, ReportRouter);
     this.express.use(`${this.basePath}/profiles`, ProfileRouter);
     this.express.use(`${this.basePath}/admin`, AdminRouter);
     this.express.use(`${this.basePath}/vehicles`, VehicleRouter);

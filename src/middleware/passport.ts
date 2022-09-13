@@ -4,7 +4,7 @@ import generateSha1Hash from "sha1";
 import _ from "lodash";
 import { ExtractJwt, Strategy as JWTstrategy } from "passport-jwt";
 import { Strategy as localStrategy } from "passport-local";
-import { UserModel, SettingModel } from "../api/User";
+import { UserModel } from "../api/User";
 import { JWT_SECRET } from "./../config/index";
 import { AppError } from "./../utils/app-error";
 import { ProfileModel } from "../api/Profile";
@@ -78,9 +78,8 @@ export const signupStrategy = new localStrategy(
       });
 
       const profile = await ProfileModel.create();
-      const notificationSettings = await SettingModel.create();
+
       await user.setProfile(profile);
-      await user.setSettings(notificationSettings);
 
       // Send the user information to the next middleware
       return done(null, user);
@@ -147,9 +146,8 @@ export const adminSignupStrategy = new localStrategy(
       });
 
       const profile = await ProfileModel.create();
-      const notificationSettings = await SettingModel.create();
+
       await user.setProfile(profile);
-      await user.setSettings(notificationSettings);
 
       // Send the user information to the next middleware
       return done(null, user);

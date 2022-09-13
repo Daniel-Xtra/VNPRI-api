@@ -9,8 +9,6 @@ const userModel_1 = require("./userModel");
 const app_error_1 = require("../../utils/app-error");
 const Profile_1 = require("../Profile");
 const helpers_1 = require("../../utils/helpers");
-const moment_1 = __importDefault(require("moment"));
-const _1 = require(".");
 const database_1 = require("../../shared/database");
 class UserService {
     constructor() {
@@ -31,14 +29,6 @@ class UserService {
                     {
                         model: Profile_1.ProfileModel,
                         required: true,
-                        attributes: {
-                            exclude: ["updated_at", "deleted_at", "userId"],
-                        },
-                    },
-                    {
-                        model: _1.AccountModel,
-                        as: "accounts",
-                        required: false,
                         attributes: {
                             exclude: ["updated_at", "deleted_at", "userId"],
                         },
@@ -105,12 +95,6 @@ class UserService {
                 attributes: {
                     exclude: helpers_1.USER_EXCLUDES,
                 },
-                include: [
-                    {
-                        model: _1.UserConnectionsModel,
-                        attributes: ["socket_id"],
-                    },
-                ],
             });
             if (user) {
                 user = user.toJSON();
@@ -131,54 +115,6 @@ class UserService {
          * @returns user
          * @memberof UserController
          */
-        this.updateStatus = async (status, user) => {
-            let data = {};
-            let now_momemnt = moment_1.default();
-            let today_rate;
-            // check status is true or false
-            if (status == "true") {
-                data.online_time = now_momemnt.toDate();
-                const saved = await _1.AccountModel.create(data);
-                // update user_status of user model by username
-                const updated = await userModel_1.UserModel.update({ user_status: status }, { where: { username: user.username } });
-                if (saved && user.addAccounts(saved) && updated) {
-                    let username = user.username;
-                    return await this.getUser(username);
-                }
-                throw new app_error_1.AppError("Could not save user data");
-            }
-            else {
-                // find today_rate from account model by userId
-                today_rate = await _1.AccountModel.findOne({
-                    where: {
-                        offline_time: "",
-                        userId: user.id,
-                    },
-                });
-                // check today_rate is present or not
-                if (!today_rate) {
-                    data.online_time = user.updated_at;
-                    const saved = await _1.AccountModel.create(data);
-                    today_rate = await user.addAccounts(saved);
-                }
-                data.offline_time = now_momemnt.toDate();
-                data.hour_used = moment_1.default
-                    .duration(moment_1.default(data.offline_time).diff(today_rate.online_time))
-                    .hours();
-                // update account of account model by userId
-                const updated_account = await _1.AccountModel.update(data, {
-                    where: { userId: user.id },
-                });
-                // update user_status of user model by username
-                const updated = await userModel_1.UserModel.update({ user_status: status }, { where: { username: user.username } });
-                if (!updated && !updated_account) {
-                    throw new app_error_1.AppError("Could not update user data");
-                }
-                let username = user.username;
-                // return user
-                return await this.getUser(username);
-            }
-        };
         this.getBlockUsers = async (user) => {
             // const blockedUsers = await BlockListModel.findAll({ where: { block_id: user.id } });
             const blockedUsers = await database_1.DB.query(`SELECT U.id,U.username,U.email,U.first_name,

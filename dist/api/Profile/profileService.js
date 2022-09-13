@@ -1,15 +1,9 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProfileService = void 0;
 const app_error_1 = require("./../../utils/app-error");
 const _1 = require(".");
 const User_1 = require("../User");
-const sequelize_1 = require("sequelize");
-const moment_1 = __importDefault(require("moment"));
-const database_1 = require("../../shared/database");
 const { cloudinary } = require("../../middleware/cloudinary");
 // require("dotenv").config;
 class ProfileService {
@@ -85,54 +79,6 @@ class ProfileService {
          * @param {String} username of user
          * @memberof ProfileController
          */
-        this.getDoctorsProgress = async (username) => {
-            // find user from user model by username
-            const user = await User_1.UserModel.findOne({ where: { username } });
-            let now_momemnt = moment_1.default();
-            let NOW = new Date();
-            const TODAY_DATE = now_momemnt.toDate();
-            let TODAY_START = NOW;
-            // find today_rate from account model by today start and end time
-            let today_rate = await User_1.AccountModel.findOne({
-                where: {
-                    online_time: {
-                        [sequelize_1.Op.gt]: TODAY_START,
-                        [sequelize_1.Op.lt]: TODAY_DATE,
-                    },
-                    userId: user.id,
-                },
-            });
-            let compute = {
-                hour_used: 0,
-                percentage: "",
-                amount_earned: 0,
-                amount_percnt: "",
-            };
-            if (today_rate) {
-                if (!today_rate.offline_time) {
-                    today_rate.offline_time = now_momemnt.toDate();
-                }
-                compute.hour_used = moment_1.default
-                    .duration(moment_1.default(today_rate.offline_time).diff(today_rate.online_time))
-                    .hours();
-                compute.percentage = Math.round((today_rate.hour_used / 24) * 100) + "%";
-                compute.amount_earned = today_rate.hour_used * 200;
-                const total_amnt = 200 * 24;
-                compute.amount_percnt =
-                    Math.round((compute.amount_earned / total_amnt) * 100) + "%";
-            }
-            const total_patients = await database_1.DB.query(`
-        SELECT DISTINCT users.id from chats
-          LEFT JOIN users ON users.id = user_id WHERE chats.sent_to = ${user.id}
-
-          UNION
-
-          SELECT DISTINCT users.id from chats
-          LEFT JOIN users ON users.id = sent_to WHERE chats.user_id = ${user.id}`, {
-                type: database_1.DB.QueryTypes.SELECT,
-            });
-            return { today_rate, compute, total_patients: total_patients.length };
-        };
         /**
          * Saves uploaded profile photo
          *

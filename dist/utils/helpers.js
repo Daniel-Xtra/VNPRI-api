@@ -3,13 +3,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.USER_INCLUDES = exports.USER_EXCLUDES_FOR_APPENDDATA = exports.PROFILE_EXCLUDES = exports.USER_EXCLUDES = exports.getMomentTime = exports.getUserShadowBalance = exports.hasCouponExpired = exports.isSubActive = exports.hasPollExpired = exports.getMomentTimeDiff = exports.unAuthModifyPosts = exports.getOffsetValue = exports.mkdirP = void 0;
+exports.USER_INCLUDES = exports.USER_EXCLUDES_FOR_APPENDDATA = exports.PROFILE_EXCLUDES = exports.USER_EXCLUDES = exports.getMomentTime = exports.hasCouponExpired = exports.isSubActive = exports.hasPollExpired = exports.getMomentTimeDiff = exports.unAuthModifyPosts = exports.getOffsetValue = exports.mkdirP = void 0;
 const moment_1 = __importDefault(require("moment"));
-const Session_1 = require("../api/Session");
 const fs_1 = __importDefault(require("fs"));
 const bluebird_1 = __importDefault(require("bluebird"));
 const fs = bluebird_1.default.promisifyAll(fs_1.default);
-const _sessions = new Session_1.SessionService();
 const mkdirP = async (directory) => {
     try {
         return await fs.mkdirAsync(directory);
@@ -113,15 +111,6 @@ exports.hasCouponExpired = hasCouponExpired;
  * get user shadow balance
  * @param user
  */
-const getUserShadowBalance = async (user) => {
-    const sub = await user.getSubscription();
-    // get active sessions
-    const activeSessions = await _sessions.getActiveSessions(user.id);
-    let credit = 0;
-    credit += activeSessions * 500;
-    return sub.coin_balance - credit;
-};
-exports.getUserShadowBalance = getUserShadowBalance;
 /**
  * get moment time
  * @param arr

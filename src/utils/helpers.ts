@@ -1,12 +1,9 @@
-import { IUserModel } from "../interfaces";
 import moment from "moment";
-import { SessionService } from "../api/Session";
+
 import nodeFs from "fs";
 import bluebird from "bluebird";
 
 const fs = bluebird.promisifyAll(nodeFs);
-
-const _sessions = new SessionService();
 
 export const mkdirP = async (directory) => {
   try {
@@ -121,19 +118,6 @@ export const hasCouponExpired = (expires: Date): boolean => {
  * get user shadow balance
  * @param user
  */
-
-export const getUserShadowBalance = async (
-  user: IUserModel
-): Promise<number> => {
-  const sub = await user.getSubscription();
-  // get active sessions
-  const activeSessions = await _sessions.getActiveSessions(user.id);
-  let credit: number = 0;
-
-  credit += activeSessions * 500;
-
-  return sub.coin_balance - credit;
-};
 
 /**
  * get moment time
