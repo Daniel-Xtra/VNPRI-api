@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ReportService = void 0;
 const crypto_1 = __importDefault(require("crypto"));
+const sequelize_1 = require("sequelize");
 const app_error_1 = require("../../utils/app-error");
 const helpers_1 = require("../../utils/helpers");
 const Profile_1 = require("../Profile");
@@ -30,7 +31,7 @@ class ReportService {
                 }
                 throw new app_error_1.AppError("Could not save report", null, 400);
             }
-            throw new app_error_1.AppError("Plate not found", null, 404);
+            throw new app_error_1.AppError("Number Plate not found", null, 404);
         };
         this.getReport = async () => {
             const all = await reportModel_1.ReportModel.findAll({
@@ -50,6 +51,9 @@ class ReportService {
                             },
                         ],
                     },
+                    {
+                        model: Vehicle_1.VehicleModel,
+                    },
                 ],
             });
             return all;
@@ -60,25 +64,23 @@ class ReportService {
                 const status = (repo.dataValues.status = "resolved");
                 let updated = await reportModel_1.ReportModel.update({ status }, { where: { id: repo.id } });
                 if (updated) {
-                    // const check = await ReportModel.findAll({
-                    //   where: { vehicle_id: repo.vehicleId },
-                    // });
-                    // if (check) {
-                    //   check.forEach((element) => {
-                    //     console.log(element.status);
-                    //     if (element?.status === "unresolved") {
-                    //       return "updated report only";
-                    //     } else {
-                    //       const veh = VehicleModel.update(
-                    //         { status: "authorized" },
-                    //         { where: { id: repo.vehicleId } }
-                    //       );
-                    //       if (veh) return "updated successfully";
-                    //       throw new AppError("could not update vehicle", null, 400);
-                    //     }
-                    //   });
-                    // }
-                    return "resolved successfully";
+                    const check = await reportModel_1.ReportModel.findAll({
+                        where: {
+                            [sequelize_1.Op.and]: [
+                                { vehicle_id: repo.vehicleId },
+                                { status: "unresolved" },
+                            ],
+                        },
+                    });
+                    if (check.length <= 0) {
+                        const veh = Vehicle_1.VehicleModel.update({ status: "authorized" }, { where: { id: repo.vehicleId } });
+                        if (veh)
+                            return "updated successfully";
+                        throw new app_error_1.AppError("could not update vehicle", null, 400);
+                    }
+                    else {
+                        return "updated report only";
+                    }
                 }
                 throw new app_error_1.AppError("could not update report", null, 400);
             }

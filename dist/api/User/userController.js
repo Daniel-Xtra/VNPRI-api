@@ -40,15 +40,6 @@ class UserController extends baseController_1.BaseController {
          * @param status
          * @param user
          */
-        this.getUserStatus = async (username) => {
-            // responsible for get user status
-            const user = await this._userService.getUserStatus(username);
-            return this.sendResponse(user);
-        };
-        this.getBlockUsers = async (user) => {
-            const block = await this._userService.getBlockUsers(user);
-            return this.sendResponse(block);
-        };
     }
 }
 exports.UserController = UserController;

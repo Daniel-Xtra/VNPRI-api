@@ -3,11 +3,7 @@ import { UserModel } from "./userModel";
 import { AppError } from "../../utils/app-error";
 import { ProfileModel } from "../Profile";
 
-import { USER_EXCLUDES } from "../../utils/helpers";
-
 import { IUser } from ".";
-
-import { DB } from "../../shared/database";
 
 export class UserService {
   /**
@@ -92,54 +88,4 @@ export class UserService {
    * @returns user
    * @memberof UserController
    */
-
-  public getUserStatus = async (username: string) => {
-    // find user from user model by username
-    let user = await UserModel.findOne({
-      where: { username },
-      attributes: {
-        exclude: USER_EXCLUDES,
-      },
-    });
-
-    if (user) {
-      user = user.toJSON();
-      // user.isOnline = user.socket_id != null ? true : false;
-      user.isOnline =
-        user.user_connections && user.user_connections.length > 0
-          ? true
-          : false;
-      delete user.user_connections;
-      return user;
-    }
-
-    throw new AppError(`User ${username} not found`, null, 404);
-  };
-
-  /**
-   * Update doctor status
-   * @param {string} status
-   * @param {string} user
-   * @returns user
-   * @memberof UserController
-   */
-
-  public getBlockUsers = async (user: IUser) => {
-    // const blockedUsers = await BlockListModel.findAll({ where: { block_id: user.id } });
-
-    const blockedUsers = await DB.query(
-      `SELECT U.id,U.username,U.email,U.first_name,
-        U.last_name,U.gender,U.membership_type,U.verified,
-        PR.profile_picture_url
-        FROM block_users AS B JOIN users AS U ON B.user_id = U.id
-        LEFT JOIN profiles PR ON PR.user_id = U.id WHERE B.block_id =${user.id}`,
-      {
-        type: (<any>DB).QueryTypes.SELECT,
-      }
-    );
-    if (blockedUsers) {
-      return blockedUsers;
-    }
-    throw new AppError(`Blocked Users not found`, null, 404);
-  };
 }

@@ -1,4 +1,6 @@
 import crypto from "crypto";
+import { Op } from "sequelize";
+
 import { AppError } from "../../utils/app-error";
 import { PROFILE_EXCLUDES, USER_EXCLUDES } from "../../utils/helpers";
 import { ProfileModel } from "../Profile";
@@ -33,7 +35,7 @@ export class ReportService {
 
       throw new AppError("Could not save report", null, 400);
     }
-    throw new AppError("Plate not found", null, 404);
+    throw new AppError("Number Plate not found", null, 404);
   };
 
   public getReport = async () => {
@@ -54,6 +56,9 @@ export class ReportService {
             },
           ],
         },
+        {
+          model: VehicleModel,
+        },
       ],
     });
     return all;
@@ -61,6 +66,7 @@ export class ReportService {
 
   public resolve = async (unique_id) => {
     const repo = await ReportModel.findOne({ where: { unique_id } });
+
     if (repo) {
       const status = (repo.dataValues.status = "resolved");
       let updated = await ReportModel.update(
@@ -68,25 +74,26 @@ export class ReportService {
         { where: { id: repo.id } }
       );
       if (updated) {
-        // const check = await ReportModel.findAll({
-        //   where: { vehicle_id: repo.vehicleId },
-        // });
-        // if (check) {
-        //   check.forEach((element) => {
-        //     console.log(element.status);
-        //     if (element?.status === "unresolved") {
-        //       return "updated report only";
-        //     } else {
-        //       const veh = VehicleModel.update(
-        //         { status: "authorized" },
-        //         { where: { id: repo.vehicleId } }
-        //       );
-        //       if (veh) return "updated successfully";
-        //       throw new AppError("could not update vehicle", null, 400);
-        //     }
-        //   });
-        // }
-        return "resolved successfully";
+        const check = await ReportModel.findAll({
+          where: {
+            [Op.and]: [
+              { vehicle_id: repo.vehicleId },
+              { status: "unresolved" },
+            ],
+          },
+        });
+
+        if (check.length <= 0) {
+          const veh = VehicleModel.update(
+            { status: "authorized" },
+            { where: { id: repo.vehicleId } }
+          );
+
+          if (veh) return "updated successfully";
+          throw new AppError("could not update vehicle", null, 400);
+        } else {
+          return "updated report only";
+        }
       }
       throw new AppError("could not update report", null, 400);
     }

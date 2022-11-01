@@ -8,8 +8,6 @@ const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const userModel_1 = require("./userModel");
 const app_error_1 = require("../../utils/app-error");
 const Profile_1 = require("../Profile");
-const helpers_1 = require("../../utils/helpers");
-const database_1 = require("../../shared/database");
 class UserService {
     constructor() {
         /**
@@ -88,47 +86,6 @@ class UserService {
          * @returns user
          * @memberof UserController
          */
-        this.getUserStatus = async (username) => {
-            // find user from user model by username
-            let user = await userModel_1.UserModel.findOne({
-                where: { username },
-                attributes: {
-                    exclude: helpers_1.USER_EXCLUDES,
-                },
-            });
-            if (user) {
-                user = user.toJSON();
-                // user.isOnline = user.socket_id != null ? true : false;
-                user.isOnline =
-                    user.user_connections && user.user_connections.length > 0
-                        ? true
-                        : false;
-                delete user.user_connections;
-                return user;
-            }
-            throw new app_error_1.AppError(`User ${username} not found`, null, 404);
-        };
-        /**
-         * Update doctor status
-         * @param {string} status
-         * @param {string} user
-         * @returns user
-         * @memberof UserController
-         */
-        this.getBlockUsers = async (user) => {
-            // const blockedUsers = await BlockListModel.findAll({ where: { block_id: user.id } });
-            const blockedUsers = await database_1.DB.query(`SELECT U.id,U.username,U.email,U.first_name,
-        U.last_name,U.gender,U.membership_type,U.verified,
-        PR.profile_picture_url
-        FROM block_users AS B JOIN users AS U ON B.user_id = U.id
-        LEFT JOIN profiles PR ON PR.user_id = U.id WHERE B.block_id =${user.id}`, {
-                type: database_1.DB.QueryTypes.SELECT,
-            });
-            if (blockedUsers) {
-                return blockedUsers;
-            }
-            throw new app_error_1.AppError(`Blocked Users not found`, null, 404);
-        };
     }
 }
 exports.UserService = UserService;
