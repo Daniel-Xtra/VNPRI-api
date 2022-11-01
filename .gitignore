@@ -3,4 +3,6 @@ logs/**
 cert.pem
 key.pem
 /.env
+public/categories
+
 package-lock.json
