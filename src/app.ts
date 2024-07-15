@@ -84,30 +84,7 @@ class App {
 
     this.express.use(errorHandler);
   }
-  // private sentryErrorReporting() {
-  //   Sentry.init({
-  //     dsn:
-  //       "https://7c27f34fcdbd43c0aa8d3d01e1e18365@o303573.ingest.sentry.io/5370147",
-  //   });
-
-  //   // The request handler must be the first middleware on the app
-  //   this.express.use(Sentry.Handlers.requestHandler());
-
-  //   // The error handler must be before any other error middleware and after all controllers
-  //   this.express.use(Sentry.Handlers.errorHandler());
-
-  //   // Optional fallthrough error handler
-  //   this.express.use(function onError(err, req, res, next) {
-  //     // The error id is attached to `res.sentry` to be returned
-  //     // and optionally displayed to the user for support.
-  //     console.log(res.sentry + "\n");
-  //     res.statusCode = 500;
-  //     res.end(res.sentry + "\n");
-  //   });
-  //   this.express.get("/debug-sentry", function mainHandler(req, res) {
-  //     throw new Error("My first Sentry error!");
-  //   });
-  // }
+  
 }
 
 export default new App().express;
